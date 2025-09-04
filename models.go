@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/bootdotdev/learn-cicd-starter/internal/database"
+	"github.com/xaitan80/learn-cicd-starter/internal/database"
 )
 
 type User struct {
