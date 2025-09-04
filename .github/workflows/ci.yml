@@ -22,22 +22,27 @@ jobs:
         run: go test -cover ./...
         
 
-  style:
+    style:
     name: Style
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v4   # you forgot this in style job
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
 
-      
-      - name: Style
+      - name: Check formatting
         run: test -z "$(go fmt ./...)"
 
       - name: Install staticcheck
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
         run: staticcheck ./...
+
 
         
