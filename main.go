@@ -1,4 +1,4 @@
-package mainhej
+package main
 
 import (
 	"database/sql"
