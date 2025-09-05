@@ -9,11 +9,12 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     env:
-      GCP_PROJECT_ID: notely-471209
+      GCP_PROJECT_ID: ${{ fromJSON(secrets.GCP_CREDENTIALS).project_id }}
       AR_REGION: europe-north2
       AR_REPO: notely-ar-repo
       IMAGE_NAME: notely
       IMAGE_TAG: latest
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Check out code
@@ -45,6 +46,14 @@ jobs:
             --tag ${AR_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${AR_REPO}/${IMAGE_NAME}:${IMAGE_TAG} \
             .
         continue-on-error: true
+
+      - name: Install goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+
+      - name: Run DB migrations
+        run: |
+          cd sql/schema
+          goose turso "$DATABASE_URL" up
 
       - name: Deploy to Cloud Run (us-central1)
         run: |
