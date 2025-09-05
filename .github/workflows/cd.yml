@@ -50,10 +50,8 @@ jobs:
       - name: Install goose
         run: go install github.com/pressly/goose/v3/cmd/goose@latest
 
-      - name: Run DB migrations
-        run: |
-          cd sql/schema
-          goose turso "$DATABASE_URL" up
+      - name: Run DB migrations (script)
+        run: ./scripts/migrateup.sh
 
       - name: Deploy to Cloud Run (us-central1)
         run: |
@@ -62,7 +60,8 @@ jobs:
             --region us-central1 \
             --allow-unauthenticated \
             --project ${GCP_PROJECT_ID} \
-            --max-instances=4
+            --max-instances=4 \
+            --set-env-vars "DATABASE_URL=${DATABASE_URL}"
           
 
 
